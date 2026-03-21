@@ -108,24 +108,4 @@ public static class ArgumentParser
 
         return (state, null);
     }
-
-    public static void PrintHelp(TextWriter? writer = null)
-    {
-        var program = typeof(Program).Assembly.GetName().Name ?? "wc";
-        writer ??= Console.Out;
-        writer.WriteLine($"Usage: {program} [-c|-m] [-lw] [file...]");
-        writer.WriteLine(
-            """
-            Options:
-              -c, --bytes       print the byte counts
-              -m, --chars       print the character counts
-              -l, --lines       print the newline counts
-              -w, --words       print the word counts
-              -h, --help        display this help and exit
-
-            If no files are specified, standard input is used.
-            Use -- to stop option parsing and treat the rest as files.
-            """
-        );
-    }
 }
