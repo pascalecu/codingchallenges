@@ -109,11 +109,12 @@ public static class ArgumentParser
         return (state, null);
     }
 
-    public static void PrintHelp()
+    public static void PrintHelp(TextWriter? writer = null)
     {
         var program = typeof(Program).Assembly.GetName().Name ?? "wc";
-        Console.WriteLine($"Usage: {program} [-c|-m] [-lw] [file...]");
-        Console.WriteLine(
+        writer ??= Console.Out;
+        writer.WriteLine($"Usage: {program} [-c|-m] [-lw] [file...]");
+        writer.WriteLine(
             """
             Options:
               -c, --bytes       print the byte counts
