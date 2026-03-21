@@ -1,4 +1,7 @@
-﻿namespace CodingChallenges.WordCount.Tests;
+﻿using FluentAssertions;
+using FluentAssertions.Execution;
+
+namespace CodingChallenges.WordCount.Tests;
 
 using Xunit;
 
@@ -15,10 +18,8 @@ public class ArgumentParserTests
         bool chars = false,
         IEnumerable<string>? files = null)
     {
-        Assert.True(result.IsSuccess, "ParseArgs should have succeeded");
-        
-        Assert.NotNull(result.Options);
-        var actual = result.Options!;
+        result.IsSuccess.Should().BeTrue("because ParseArgs should have succeeded");
+        result.Options.Should().NotBeNull();
 
         var expected = new Options
         {
@@ -29,7 +30,7 @@ public class ArgumentParserTests
             Files = [.. files ?? []]
         };
 
-        Assert.Equivalent(expected, actual);
+        result.Options.Should().BeEquivalentTo(expected);
     }
 
     private static void VerifyNoOptionsSet(ParseResult result)
@@ -66,8 +67,7 @@ public class ArgumentParserTests
         bool expectChars)
     {
         var result = ArgumentParser.ParseArgs([arg]);
-
-        Assert.True(result.IsSuccess);
+        
         VerifyOptions(
             result,
             lines: expectLines,
@@ -111,10 +111,11 @@ public class ArgumentParserTests
     public void ParseArgs_HelpRequested_ReturnsShowHelpTrue(string arg)
     {
         var result = ArgumentParser.ParseArgs([arg]);
-        Assert.Multiple(
-            () => Assert.True(result.ShowHelp),
-            () => Assert.Null(result.Options)
-        );
+        using (new AssertionScope())
+        {
+            result.ShowHelp.Should().BeTrue();
+            result.Options.Should().BeNull();
+        }
     }
 
     [Theory(DisplayName = "Should prioritize help and ignore all other arguments/files")]
@@ -124,10 +125,11 @@ public class ArgumentParserTests
     {
         var result = ArgumentParser.ParseArgs(args);
 
-        Assert.Multiple(
-            () => Assert.True(result.ShowHelp),
-            () => Assert.Null(result.Options)
-        );
+        using (new AssertionScope())
+        {
+            result.ShowHelp.Should().BeTrue();
+            result.Options.Should().BeNull();
+        }
     }
 
     // -------------------------
@@ -145,10 +147,11 @@ public class ArgumentParserTests
     {
         var result = ArgumentParser.ParseArgs(args);
 
-        Assert.Multiple(
-            () => Assert.False(result.IsSuccess),
-            () => Assert.Contains("mutually exclusive", result.ErrorMessage)
-        );
+        using (new AssertionScope())
+        {
+            result.IsSuccess.Should().BeFalse();
+            result.ErrorMessage.Should().Contain("mutually exclusive");
+        }
     }
 
     // -------------------------
@@ -164,10 +167,11 @@ public class ArgumentParserTests
     {
         var result = ArgumentParser.ParseArgs([arg]);
 
-        Assert.Multiple(
-            () => Assert.False(result.IsSuccess),
-            () => Assert.Contains("Unknown option", result.ErrorMessage)
-        );
+        using (new AssertionScope())
+        {
+            result.IsSuccess.Should().BeFalse();
+            result.ErrorMessage.Should().Contain("Unknown option");
+        }
     }
 
     // -------------------------
