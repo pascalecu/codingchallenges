@@ -6,7 +6,7 @@ public record Options
     {
     }
 
-    public Options(bool lines, bool words, bool chars, bool bytes)
+    public Options(bool lines = false, bool words = false, bool chars = false, bool bytes = false)
     {
         Lines = lines;
         Words = words;
@@ -18,6 +18,6 @@ public record Options
     public bool Words { get; init; }
     public bool Bytes { get; init; }
     public bool Chars { get; init; }
-    
+
     public List<string> Files { get; init; } = [];
 }
